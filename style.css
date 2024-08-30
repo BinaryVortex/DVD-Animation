@@ -1,0 +1,254 @@
+:root{
+	--acceleration-default: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+	--acceleration-back: cubic-bezier(0.680, -0.550, 0.265, 1.550);
+	--border-circular: 50%;
+	--border-soft: 21%;
+	--color-land: #559284;
+	--color-cloud: #def8f2;
+	--color-shuriken: #c2ebe5;
+	--color-shuriken-accent: #a2c9c3;
+	--color-coin: #feed78;
+	--color-coin-accent: #c6ac00;
+	--color-totem: linear-gradient( to top, rgb(75,68,60) 0%, rgb(105,68,26) 100%);
+	--color-hollow: linear-gradient(to left, rgba(255,255,255,0) 32%,#382c1f 33%,#382c1f 66%,rgba(255,255,255,0) 67%);
+	--color-grass: linear-gradient(to top, rgb(110,174,160) 0%, rgb(85,146,132) 100%);
+	--color-grass-bright:  linear-gradient(to top, rgb(110,174,160) 0%, rgb(105,160,148) 100%);
+  }
+  
+  *,
+  *:before,
+  *:after{
+	box-sizing:border-box;
+  }
+  
+  
+  html {
+	background: var(--color-land);
+	overflow: hidden;
+  }
+  
+  
+  .isometric-scene{
+	position: relative;
+	height: 100vh;
+	width: 100%;
+	transition: transform 600ms ease;
+	transform: rotateX(45deg) rotateY(0deg) rotateZ(45deg);
+	-webkit-transform-origin: 50% 50%;
+	will-change: transform, opacity;
+	-webkit-backface-visibility: hidden;
+	animation: worldCamera 10s linear infinite;
+  
+  }
+  
+  
+  .item {
+	position: absolute;
+	left: calc(50% - var(--item-half-width));
+	top: calc(50% - var(--item-half-height));
+	-webkit-backface-visibility: hidden;
+	-webkit-transform-style: preserve-3d;
+  }
+  
+  .item:before,
+  .item:after{
+	content: "";
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	outline: 1px solid transparent;
+  }
+  
+  
+  .outer-land {
+	width: 300px;
+	height: 300px;
+	background: rgba(0, 171, 224, 0.13);
+	--item-half-width: 150px;
+	--item-half-height: 150px;
+	border-radius: var(--border-circular);
+	background-image: var(--color-grass);
+  }
+  
+  .inner-land {
+	width: 128px;
+	height: 128px;
+	--item-half-width: 64px;
+	--item-half-height: 64px;
+	background: rgba(0, 171, 224, 0.34);
+	border-radius: var(--border-soft);
+	background-image: var(--color-grass-bright);
+  
+  }
+  
+  .cloud {
+	width: 48px;
+	height: 48px;
+	--item-half-width: 24px;
+	--item-half-height: 24px;
+	border-radius: var(--border-circular);
+	background: var(--color-cloud);
+	animation: cloudOrbit 30s linear infinite;
+  }
+  
+  .cloud:before,
+  .cloud:after {
+	border-radius: var(--border-circular);
+	background: var(--color-cloud);
+  }
+  
+  .cloud:before{
+	transform: translate3d(-13px,8px,0) scale(.6,.6);
+	animation-direction: alternate;
+  }
+  
+  .cloud:after {
+  
+	transform: translate3d(13px,-8px,0) scale(.6,.6);
+	animation-direction: alternate;
+  }
+  
+  .totem{
+	width: 64px;
+	height: 64px;
+	--item-half-width: 32px;
+	--item-half-height: 32px;
+  }
+  
+  .totem:after {
+	border-radius: var(--border-soft);
+	transform-style: preserve-3d;
+	background-image: var(--color-totem);
+	border-bottom: 8px solid transparent;
+	
+	background-size: 100% 120%; /* Intardansing hack to fix weird case of transparent border not appearning transparent over linear-gradient background. More info: https://css-tricks.com/forums/topic/css3-gradients-and-transparent-borders/
+	*/
+	border-image: var(--color-hollow) 8 stretch;
+  }
+  
+  .shuriken,
+  .shuriken:before{
+	  width: 20px;
+	height: 20px;
+	--item-half-width: 10px;
+	--item-half-height: 10px;
+	border-radius: var(--border-soft);
+	background: var(--color-shuriken);
+	animation: shurikenSpin 4s var(--acceleration-default) infinite;
+	animation-direction: alternate;
+  
+  }
+  .shuriken:before{
+	border-radius: 0;
+	transform: scaleY(1.15) rotateZ(45deg);
+	animation: none;
+  }
+  
+  .coin,
+  .coin:after,
+  .coin:before{
+	width: 20px;
+	height: 20px;
+	--item-half-width: 12px;
+	--item-half-height: 12px;
+	border-radius: var(--border-circular);
+	background: var(--color-coin-accent);
+  }
+  
+  .coin{
+	animation: coinJump 4s var(--acceleration-back) infinite;
+  }
+  
+  .coin:before{
+	background: var(--color-coin-accent);
+	box-shadow: var(--gold-shadow);
+	transform: scale(0,0);
+	 animation: coinScale 4s ease infinite;
+  }
+  
+  
+  .coin:after{
+	background: var(--color-coin);
+	transform: translate3d(-3px,-3px,0);
+  }
+  
+  @keyframes cloudOrbit {
+	0%{
+	  transform: rotate(0deg) translateX(150px) rotate(0deg);
+	}
+	100%{
+	  transform: rotate(360deg) translateX(150px) rotate(-360deg);
+	}
+  }
+  
+  @keyframes shurikenSpin {
+	0% {
+	  transform: translate3d(0, 0, 0) rotateZ(0) scale(0.5,0.5);
+	  opacity: 0;
+	}
+	6%{
+	  opacity: 0;
+	}
+	10%{
+	  opacity: 1;
+	}
+	14% {
+	  transform: translate3d(0, 64px, 0) rotateZ(0);
+	
+	}
+	28% {
+	  transform: translate3d(64px, 64px, 0) rotateZ(360deg);
+  
+	}
+	42% {
+	  transform: translate3d(64px, -64px, 0) rotateZ(0);
+	}
+	56% {
+	  transform: translate3d(-64px, -64px, 0) rotateZ(180deg);
+	}
+	70% {
+	  transform: translate3d(-64px, 64px, 0) rotateZ(360deg);
+	}
+	84% {
+	  transform: translate3d(0, 64px, 0) rotateZ(0);
+  
+	}
+	90%{
+	  opacity: 1;
+	}
+	94%{
+	  opacity: 0;
+	}
+	100% {
+	  transform: translate3d(0, 0, 0) rotateZ(0) scale(0.5,0.5);
+	  opacity: 0;
+	}
+  }
+  
+  @keyframes coinJump {
+	0%,
+	90%,
+	100%{
+	  transform: translate3d(0,0,0) scale(1,1);
+	}
+	94%{
+	  transform: translate3d(-5px,-5px,0) scale(1.25,1.23);
+	}
+  }
+  
+  @keyframes coinScale {
+	0%,
+	90%{
+	  transform: scale(0,0);
+	  opacity:1;
+	}
+	96%{
+	  transform: scale(1.5,1.5);
+	  opacity:1;
+	}
+	100%{
+	  transform: scale(2.5,2.5);
+	  opacity:0;
+	}
+  }
